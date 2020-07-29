@@ -1,0 +1,5 @@
+#!/bin/sh
+# Wazuh Docker Copyright (C) 2020 Wazuh Inc. (License GPLv2)
+service filebeat start
+/opt/zeek/bin/zeekctl deploy
+tail -f /var/log/filebeat/filebeat
