@@ -1,0 +1,31 @@
+# Contributor: Leena Wilson <lwilson2048@gmail.com>
+# Maintainer: Leena Wilson <lwilson2048@gmail.com>
+pkgname=bombus
+pkgver=
+pkgrel=0
+pkgdesc=""
+url=""
+arch="x86_64"
+license="Apache-2.0"
+depends="docker docker-compose"
+makedepends=""
+install=""
+subpackages="$pkgname-dev $pkgname-doc"
+source=""
+builddir="$srcdir/"
+
+build() {
+	# Replace with proper build command(s)
+	:
+}
+
+check() {
+	# Replace with proper check command(s)
+	:
+}
+
+package() {
+	# Replace with proper package command(s)
+	:
+}
+
