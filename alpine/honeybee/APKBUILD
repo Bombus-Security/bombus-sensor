@@ -1,10 +1,10 @@
 # Contributor: Leena Wilson <lwilson2048@gmail.com>
 # Maintainer: Leena Wilson <lwilson2048@gmail.com>
-pkgname=bombus
-pkgver=
+pkgname=honeybee
+pkgver=0
 pkgrel=0
-pkgdesc=""
-url=""
+pkgdesc="The honeybee sensor."
+url="https://github.com/Honeybee-Security"
 arch="x86_64"
 license="Apache-2.0"
 depends="docker docker-compose"

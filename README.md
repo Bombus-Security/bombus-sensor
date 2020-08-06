@@ -1,8 +1,27 @@
-# KROPOTKIN SENSOR
+# HONEYBEE SENSOR
 
 ## What is it?
 
-The Kropotkin sensor is the collection of software that is installed on a network device to capture, analyze, and transmit network traffic. 
+The Honeybee sensor is the collection of software that is installed on a network device to capture, analyze, and transmit network traffic. 
+
+## Building
+
+The build process.
+
+If you're developing on an Alpine linux host skip making the VM.
+Create a VM with Alpine installed on it.
+On the Alpine VM install git, alpine-sdk, docker, docker-compose
+
+On your host create an SSH server.
+From the Alpine host run:
+git clone ssh://<host ip>/<host path to this repo>
+
+On Alpine run:
+gradle :make-alpine-package
+
+## TODO
+
+Switch to building stuff in an Alpine docker container instead of needing a VM.
 
 ## Organization
 
