@@ -4,3 +4,19 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds
  */
+
+/*
+ * Sets up the docker build container, copies all needed files into it, execs the 
+ * build script on the container, and retrieves the built package.
+ */
+task makeAlpinePackage(type: Exec)
+{
+	workingDir './alpine'
+	commandLine 'sh', './gradle-build-package.sh'
+
+}
+
+task makeDockerImages()
+{
+}
+
