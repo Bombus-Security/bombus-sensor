@@ -20,3 +20,25 @@ task makeDockerImages()
 {
 }
 
+task copyZeekConfigToELKTemp(type: Copy)
+{
+	from "zeek/local.zeek", "zeek/zeek-filebeat.yml", "zeek/node.cfg"
+	into "docker/temp"
+}
+
+task copyWazuhConfigToELKTemp(type: Copy)
+{
+        from "wazuh/wazuh-filebeat.yml", "wazuh/wazuh-template.json"
+        into "docker/temp"
+}
+
+task copyELKConfigToELKTemp(type: Copy)
+{
+        from "elk/logstash.yml", "elk/logstash-pipeline.conf"
+        into "docker/temp"
+}
+
+task copyAllConfigToELKTemp()
+{
+	dependsOn 'copyELKConfigToELKTemp', 'copyWazuhConfigToELKTemp', 'copyZeekConfigToELKTemp'
+}

@@ -23,6 +23,8 @@ gradle :make-alpine-package
 
 Switch to building stuff in an Alpine docker container instead of needing a VM.
 
+Move the docker-compose stuff into the Alpine host.
+
 ## Organization
 
 The sensor uses various software packages including [Zeek](https://zeek.org/), [Wazuh](https://wazuh.com/), and [Filebeat](https://www.elastic.co/beats/filebeat). Each of these components is run in a Docker container. The host OS is Alpine Linux. Various scripts and services are used to control and integrate these components. A frontend hosted on [Nginx](https://www.nginx.com/) is developed in the repo [kropotkin-sensor-frontend](https://github.com/Kropotkin-Security/kropotkin-sensor-frontend).
@@ -48,10 +50,6 @@ Documentation.
 Stuff created and used by Gradle. Probably shouldn't edit anything in it.
 
 ### hadoop/
-
-### sensor-install/
-
-Most likely needs to be deleted as of 7-Aug-2020.
 
 ### wazuh/
 

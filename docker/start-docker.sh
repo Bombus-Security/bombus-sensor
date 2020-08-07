@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script moves all the necessary config files into a temp folder
+
 if ! [ $(id -u) = 0 ]; then
         echo "Must be run as root."
         exit 1
