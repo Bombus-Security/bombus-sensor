@@ -31,6 +31,17 @@ The sensor uses various software packages including [Zeek](https://zeek.org/), [
 
 The sensor is responsible for sending the data to various sinks and performing any transforms needed to do this. Currently (6-Aug-2020) logstash and filebeat are used for collecting and transforming the data.
 
+The system is composed of sub-systems that communicate via AMQP and a Database. 
+
+| Abstract System | Current Implementation | General Description |
+| ----------- | ----------- | ----------- |
+| NIDS | Zeek | Monitors network traffic with signatures and anomaly detection |
+| Database | Elasticsearch and Logstash | Stores, indexes, and makes available the data from other systems. |
+| Data Collection | Filebeat on individual sub-systems | Collects and uploads the data from other sub-systems. Slightly breaks loose coupling. |
+| Analysis | Scripts running in docker | Takes collected data and performs various analysis. |
+| Message Broker | RabbitMQ | Acts as a broker between the other sub-systems. |
+| Data Transmission | Logstash on Database | Breaks loose coupling. Transmits data to external systems. |
+
 ## Directory Layout
 
 ### alpine/
