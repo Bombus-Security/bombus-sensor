@@ -20,25 +20,25 @@ task makeDockerImages()
 {
 }
 
-task copyZeekConfigToELKTemp(type: Copy)
+task copyNIDSConfigToDockerTemp(type: Copy)
 {
-	from "zeek/local.zeek", "zeek/zeek-filebeat.yml", "zeek/node.cfg"
+	from "nids/local.zeek", "nids/zeek-filebeat.yml", "nids/node.cfg"
 	into "docker/temp"
 }
 
-task copyWazuhConfigToELKTemp(type: Copy)
+task copyHIDSConfigToDockerTemp(type: Copy)
 {
-        from "wazuh/wazuh-filebeat.yml", "wazuh/wazuh-template.json"
+        from "hids/wazuh-filebeat.yml", "hids/wazuh-template.json"
         into "docker/temp"
 }
 
-task copyELKConfigToELKTemp(type: Copy)
+task copyDBConfigToDockerTemp(type: Copy)
 {
-        from "elk/logstash.yml", "elk/logstash-pipeline.conf"
+        from "database/logstash.yml", "database/logstash-pipeline.conf"
         into "docker/temp"
 }
 
 task copyAllConfigToELKTemp()
 {
-	dependsOn 'copyELKConfigToELKTemp', 'copyWazuhConfigToELKTemp', 'copyZeekConfigToELKTemp'
+	dependsOn 'copyDBConfigToDockerTemp', 'copyHIDSConfigToDockerTemp', 'copyNIDSConfigToDockerTemp'
 }

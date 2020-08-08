@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package analysis;
+
+message UploadScriptRequest
+{
+    required string script_name = 1;
+    string script = 2;
+}
+
+message UploadScriptResponse
+{
+    required bool upload_success = 1;
+    oneof response_oneof
+    {
+        string script_uuid = 2;
+        string fail_reason = 3;
+    }
+}

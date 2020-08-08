@@ -12,6 +12,8 @@ Analysis can be performed by the following triggers:
 
 Other sub-systems can upload scripts to the analysis sub-system. This should be preferred to performing analysis within a sub-system.
 
-### Messages {#message-types}
+### Messages
 
-
+| Message Name | Description |
+| ----------- | ----------- |
+| Upload Script | Uploads an analysis script. |

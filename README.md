@@ -32,7 +32,7 @@ The system is composed of sub-systems that communicate via AMQP and a Database. 
 | NIDS | Zeek | Monitors network traffic with signatures and anomaly detection |
 | Database | Elasticsearch and Logstash | Stores, indexes, and makes available the data from other systems. |
 | Data Collection | Filebeat on individual sub-systems | Collects and uploads the data from other sub-systems. Slightly breaks loose coupling. |
-| Analysis | Scripts running in docker | Takes collected data and performs various analysis. |
+| [Analysis](doc/analysis.md) | Scripts running in docker | Takes collected data and performs various analysis. |
 | Message Broker | RabbitMQ | Acts as a broker between the other sub-systems. |
 | Data Transmission | Logstash on Database | Breaks loose coupling currently. Transmits data to external systems and performs any needed modifications. |
 | Firewall | NFTables on sensor host | Controls network access. |
@@ -82,7 +82,7 @@ Note: Reads/Writes/Queries are not performed with the messaging system but throu
 
 **Analysis Messages**
 
-See [here](doc/analysis.md#message-types)
+See [here](doc/analysis.md)
 
 **Firewall Messages**
 
