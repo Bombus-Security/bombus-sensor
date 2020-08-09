@@ -6,7 +6,8 @@ elk/*.log
 docker/temp/
 TODO
 secret/
-
+dist/
+*.egg-info/
 # Ignore Gradle project-specific cache directory
 .gradle
 
