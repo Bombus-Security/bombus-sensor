@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package nids;
+
+service NIDS 
+{
+  rpc StartNIDS (StartNIDSRequest) returns (StartNIDSReply) {}
+  rpc StopNIDS (StopNIDSRequest) returns (StopNIDSReply) {}
+  rpc UploadIntel (UploadIntelRequest) returns (UploadIntelReply) {}
+}
+
+message StartNIDSRequest
+{
+}
+
+message StartNIDSReply
+{
+    bool success = 1;
+    string error_message = 2;
+}
+
+message StartNIDSRequest
+{
+}
+
+message StartNIDSReply
+{
+    bool success = 1;
+    string error_message = 2;
+}
+
+message UploadIntelRequest
+{
+    string intel = 1;
+    string filename = 2;
+}
+
+message UploadIntelReply
+{
+    bool success = 1;
+    string error_message = 2;
+}

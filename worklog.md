@@ -16,3 +16,9 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-continuous-integr
 https://www.digitalocean.com/community/tutorials/how-to-install-buildbot-on-ubuntu-16-04
 
 BuildBot has everything we need but is too heavy. It will be great to set it up now since it will be useful down the road. I still need actual build scripts.
+
+Will also need a secure file store system for uploading/downloading files.
+
+Working on the NIDS system. Integrating with CSIRT
+
+@load policy/integration/collective-intel
