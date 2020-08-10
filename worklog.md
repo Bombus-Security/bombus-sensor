@@ -22,3 +22,7 @@ Will also need a secure file store system for uploading/downloading files.
 Working on the NIDS system. Integrating with CSIRT
 
 @load policy/integration/collective-intel
+
+Also figuring out Sphinx/docs
+
+Need to seperate the grpc server so we don't duplicate that code everywhere. Store a copy of the script with each sub-system. The only thing that probably varies is the port.

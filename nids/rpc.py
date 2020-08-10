@@ -26,6 +26,8 @@ class NIDS(rpc_pb2_grpc.NIDSServicer):
         assert(len(fields) == len(lines[:-1].split("\t")))
 
     def UploadIntel(self, request, context):
+        """Attempts to upload some intel into the NIDS.
+        """
         filename = request.filename
         intel = request.intel
 

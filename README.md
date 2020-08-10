@@ -27,19 +27,19 @@ The sensor is responsible for sending the data to various sinks and performing a
 
 The system is composed of sub-systems that communicate via AMQP and a Database. Each sub-system is ideally contained in a docker image. This is not always possible so some exceptions are allowed. 
 
-| Abstract System | RPC Port | Current Implementation | General Description |
+| Abstract System | Current Implementation | General Description |
 | ----------- | ----------- | ----------- | ----------- |
-| [NIDS](doc/nids.md) | 19170 | Zeek | Monitors network traffic with signatures and anomaly detection |
-| Database | 19171 | Elasticsearch and Logstash | Stores, indexes, and makes available the data from other systems. |
-| Data Collection | 19172 | Filebeat on individual sub-systems | Collects and uploads the data from other sub-systems. Slightly breaks loose coupling. |
-| [Analysis](doc/analysis.md) | 19173 | Scripts running in docker | Takes collected data and performs various analysis. |
-| Message Broker | 19174 | RabbitMQ | Acts as a broker between the other sub-systems. |
-| Data Transmission | 19175 | Logstash on Database | Breaks loose coupling currently. Transmits data to external systems and performs any needed modifications. |
-| Firewall | 19176 | NFTables on sensor host | Controls network access. |
-| HIDS | 19177 | Wazuh | The HIDS manager for anyagents installed on hosts. |
-| Routing | 19178 | NFTables on sensor host | Controls IP assignment, connections, WiFi, etc. |
-| Frontend | 19179 | Custom web app on NGINX | Allows a user to view and manage their network. |
-| Subsystem Management | 19180 | Custom service on sensor host | Manages starting, stopping, and monitoring of other sub-systems. |
+| [NIDS](doc/nids.md) | Zeek | Monitors network traffic with signatures and anomaly detection |
+| Database | Elasticsearch and Logstash | Stores, indexes, and makes available the data from other systems. |
+| Data Collection | Filebeat on individual sub-systems | Collects and uploads the data from other sub-systems. Slightly breaks loose coupling. |
+| [Analysis](doc/analysis.md) | Scripts running in docker | Takes collected data and performs various analysis. |
+| Message Broker | RabbitMQ | Acts as a broker between the other sub-systems. |
+| Data Transmission | Logstash on Database | Breaks loose coupling currently. Transmits data to external systems and performs any needed modifications. |
+| Firewall | NFTables on sensor host | Controls network access. |
+| HIDS | Wazuh | The HIDS manager for anyagents installed on hosts. |
+| Routing | NFTables on sensor host | Controls IP assignment, connections, WiFi, etc. |
+| Frontend | Custom web app on NGINX | Allows a user to view and manage their network. |
+| Subsystem Management | Custom service on sensor host | Manages starting, stopping, and monitoring of other sub-systems. |
 
 Control of the various sub-systems is enacted by sending generic messages to an abstract system. Each abstract system has a specific interface of actions it must implement. The implementation is completely contained within the subsystem.
 
