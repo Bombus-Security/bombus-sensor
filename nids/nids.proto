@@ -19,11 +19,11 @@ message StartNIDSReply
     string error_message = 2;
 }
 
-message StartNIDSRequest
+message StopNIDSRequest
 {
 }
 
-message StartNIDSReply
+message StopNIDSReply
 {
     bool success = 1;
     string error_message = 2;

@@ -14,3 +14,4 @@ dist/
 # Ignore Gradle build output directory
 build
 doc/source/honeybee-*.rst
+proto/
