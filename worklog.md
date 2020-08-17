@@ -71,3 +71,15 @@ python -m grpc_tools.protoc -I=. --python_out=. --grpc_python_out=. .
 Zeek dockerfile now copies the relevant config files
 
 Need to add a makefile rule.
+
+### 17-Aug-2020
+
+Worked a lot on funding and business stuff.
+
+Realized we need to focus on the local cloud aspect. We could store data in a distributed manner accross all the devices and use it like a highly localized CDN.
+
+You'll be able to develop apps for the device as if it was a traditional cloud environment.
+
+Also, moving towards getting a simple prototype running on a VM ASAP.
+
+Probably going to move away from ES and towards a trad database to ease integration.

@@ -1,7 +1,7 @@
 version: '2.2'
 services:
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
     container_name: es01
     environment:
       - node.name=es01
@@ -21,7 +21,7 @@ services:
       - green
 
   kib01:
-    image: docker.elastic.co/kibana/kibana:7.8.0
+    image: docker.elastic.co/kibana/kibana:7.8.1
     container_name: kib01
     ports:
       - 5601:5601
@@ -34,12 +34,11 @@ services:
       - es01
 
   ls01:
-    image: logstash-gps:latest
+    image: docker.elastic.co/logstash/logstash:7.8.1
     container_name: ls01
     volumes:
       - ./temp/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./temp/logstash-pipeline.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ../secret/kropotkin-gc-key.json:/usr/share/logstash/kropotkin-gc-key.json
     ports:
       - 5044:5044
     environment:
@@ -60,42 +59,11 @@ services:
     volumes:
       - ./temp/zeek-filebeat.yml:/etc/filebeat/filebeat.yml
       - ./temp/local.zeek:/opt/zeek/share/zeek/site/local.zeek
-      - ./temp/sumstats-kropotkin.zeek:/opt/zeek/share/zeek/site/sumstats-kropotkin.zeek
       - ./temp/node.cfg:/opt/zeek/etc/node.cfg
     depends_on:
       - ls01
     cap_add:
       - NET_ADMIN
-
-  hids:
-    image: wazuh/wazuh:latest
-    container_name: hids
-    hostname: hids-manager
-    restart: always
-    ports:
-      - "1514:1514/udp"
-      - "1515:1515"
-      - "514:514/udp"
-      - "55000:55000"
-    network_mode: host
-    environment:
-      LOGSTASH_URL: http://127.0.0.1:5044
-    volumes:
-      - ./temp/wazuh-filebeat.yml:/etc/filebeat/filebeat.yml
-      - ./temp/wazuh-template.json:/etc/filebeat/wazuh-template.json
-    depends_on:
-      - ls01
-
-  messaging:
-    image: rabbitmq/rabbitmq:management-alpine
-    container_name: messaging
-    hostname: messaging-manager
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - green
 
 volumes:
   data01:

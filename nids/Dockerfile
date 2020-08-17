@@ -33,13 +33,13 @@ RUN mkdir /etc/service
 RUN mkdir /etc/service/filebeat
 
 #Copy config files
-COPY ../config/local.zeek /opt/zeek/share/zeek/
-COPY ../config/node.cfg /opt/zeek/etc/
-COPY ../config/zeek-filebeat.yml /etc/filebeat
+COPY ./config/local.zeek /opt/zeek/share/zeek/
+COPY ./config/node.cfg /opt/zeek/etc/
+COPY ./config/zeek-filebeat.yml /etc/filebeat
 COPY ./filebeat.runit.service /etc/service/filebeat/run
 
 #Copy all Zeek scripts
-ADD ../zeek-scripts /opt/zeek/share/zeek/site/
+ADD ./zeek-scripts /opt/zeek/share/zeek/site/
 
 RUN chmod +x /etc/service/filebeat/run
 COPY ./entry.sh /bin/entry.sh
