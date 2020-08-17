@@ -26,3 +26,48 @@ Working on the NIDS system. Integrating with CSIRT
 Also figuring out Sphinx/docs
 
 Need to seperate the grpc server so we don't duplicate that code everywhere. Store a copy of the script with each sub-system. The only thing that probably varies is the port.
+
+### 10-Aug-2020
+
+Work on building the Docker images.
+
+Each docker image will contain an RPC server script customized for it.
+
+Each Docker image also needs a service that manages the sub-system and RPC server.
+
+Alpine uses OpenRC. https://wiki.alpinelinux.org/wiki/Writing_Init_Scripts
+
+Researching service meshs and microservices.
+
+A true service mesh seems to be over kill. The microservices are all on the same device. 
+
+We don't even need a proxy system. Just hardcode the ports for each service. The host will always be localhost
+
+Build steps:
+	protoc
+	build python
+	build docker images:
+		create container
+		copy files into container (dont need to start container)
+		docker commit container -m "version"
+		
+		OR
+		
+		make build dir for each Docker image
+		copy relevant files to each Dockerfile folder
+		build from docker file
+		
+	make alpine package:
+		move relevant stuff into package dir
+		start docker image
+		copy over relevant files
+		docker exec
+		copy package out of image
+		
+python -m grpc_tools.protoc -I=. --python_out=. --grpc_python_out=. .
+
+### 11-Aug-2020
+
+Zeek dockerfile now copies the relevant config files
+
+Need to add a makefile rule.

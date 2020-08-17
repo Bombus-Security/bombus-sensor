@@ -32,11 +32,16 @@ RUN ln -s /opt/zeek/logs /var/log/bro
 RUN mkdir /etc/service
 RUN mkdir /etc/service/filebeat
 
+#Copy config files
+COPY ../config/local.zeek /opt/zeek/share/zeek/
+COPY ../config/node.cfg /opt/zeek/etc/
+COPY ../config/zeek-filebeat.yml /etc/filebeat
 COPY ./filebeat.runit.service /etc/service/filebeat/run
 
-RUN chmod +x /etc/service/filebeat/run
-copy ./entry.sh /bin/entry.sh
+#Copy all Zeek scripts
+ADD ../zeek-scripts /opt/zeek/share/zeek/site/
 
-#CMD [/opt/zeek/bin/zeekctl deploy]
-#CMD ["service", "filebeat", "start"]
+RUN chmod +x /etc/service/filebeat/run
+COPY ./entry.sh /bin/entry.sh
+
 ENTRYPOINT ["/bin/entry.sh"]

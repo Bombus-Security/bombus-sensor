@@ -7,22 +7,21 @@ if ! [ $(id -u) = 0 ]; then
         exit 1
 fi
 
-export ELK_DIR=../elk
-export ZEEK_DIR=../zeek
-export WAZUH_DIR=../wazuh
+export DATABASE_DIR=../database
+export NIDS_DIR=../nids
+export HIDS_DIR=../hids
 export TEMP_DIR=./temp
 
 #Move all needed files here
-cp $ELK_DIR/logstash.yml $TEMP_DIR/logstash.yml
-cp $ELK_DIR/logstash-pipeline.conf $TEMP_DIR/logstash-pipeline.conf
+cp $DATABASE_DIR/logstash.yml $TEMP_DIR/logstash.yml
+cp $DATABASE_DIR/logstash-pipeline.conf $TEMP_DIR/logstash-pipeline.conf
 
-cp $ZEEK_DIR/local.zeek $TEMP_DIR/local.zeek
-cp $ZEEK_DIR/filebeat.yml $TEMP_DIR/zeek-filebeat.yml
-cp $ZEEK_DIR/node.cfg $TEMP_DIR/node.cfg
-cp $ZEEK_DIR/sumstats-kropotkin.zeek $TEMP_DIR/sumstats-kropotkin.zeek
+cp $NIDS_DIR/config/local.zeek $TEMP_DIR/local.zeek
+cp $NIDS_DIR/config/zeek-filebeat.yml $TEMP_DIR/zeek-filebeat.yml
+cp $NIDS_DIR/config/node.cfg $TEMP_DIR/node.cfg
 
-cp $WAZUH_DIR/filebeat.yml $TEMP_DIR/wazuh-filebeat.yml
-cp $WAZUH_DIR/wazuh-template.json $TEMP_DIR/wazuh-template.json
+cp $HIDS_DIR/wazuh-filebeat.yml $TEMP_DIR/wazuh-filebeat.yml
+cp $HIDS_DIR/wazuh-template.json $TEMP_DIR/wazuh-template.json
 
 docker-compose up
 
