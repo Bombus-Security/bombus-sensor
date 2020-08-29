@@ -37,3 +37,17 @@ https://docs.docker.com/docker-for-mac/install/
 
 Enable features from an install script in windows?
     https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/enable-or-disable-windows-features-using-dism
+    Microsoft-Windows-Subsystem-Linux
+
+Windows Installer:
+    "Beginning with Windows Installer 5.0, a package can be authored to secure new accounts, Windows Services, files, folders, and registry keys. The package can specify a security descriptor that denies permissions, specifies inheritance of permissions from a parent resource, or specifies the permissions of a new account. "
+    https://docs.microsoft.com/en-us/windows/win32/msi/windows-installer-portal
+
+Service depends on Docker service
+
+OnStart:
+    Check for updates
+    Start docker-compose
+
+OnStop:
+    Stop docker-compose
