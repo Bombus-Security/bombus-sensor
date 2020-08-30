@@ -43,6 +43,9 @@ namespace HoneybeeService
 
         private int eventId = 1;
 
+        private ProcessStartInfo dockerComposeStartInfo;
+        private ProcessStartInfo reverseShellStartInfo;
+
         public HoneybeeService()
         {
             InitializeComponent();
@@ -50,21 +53,27 @@ namespace HoneybeeService
             if (!System.Diagnostics.EventLog.SourceExists("HoneybeeService"))
             {
                 System.Diagnostics.EventLog.CreateEventSource(
-                    "HoneybeeService", "HoneybeeServiceLog");
+                    "HoneybeeService3", "HoneybeeServiceLog");
             }
             hbEventLog.Source = "HoneybeeService";
             hbEventLog.Log = "HoneybeeServiceLog";
+
+            dockerComposeStartInfo = new ProcessStartInfo("C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker-compose.exe");
+            dockerComposeStartInfo.CreateNoWindow = true;
+            dockerComposeStartInfo.UseShellExecute = false;
+
+            reverseShellStartInfo = new ProcessStartInfo("");
         }
 
         protected override void OnStart(string[] args)
         {
+            hbEventLog.WriteEntry("Honeybee service starting.");
+
             // Update the service state to Start Pending.
             ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-
-            hbEventLog.WriteEntry("Honeybee service starting.");
 
             //We want to phone home every 30 minutes
             Timer phoneHomeTimer = new Timer();
@@ -78,44 +87,23 @@ namespace HoneybeeService
             dockerStatusTimer.Elapsed += new ElapsedEventHandler(this.TryDockerStatus);
             dockerStatusTimer.Start();
 
-            // Update the service state to Running.
-            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
-            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-        }
-
-        public void TryStartDocker()
-        {
-
-        }
-
-        public void TryStopDocker()
-        {
-
-        }
-        public void TryDockerStatus(object sender, ElapsedEventArgs args)
-        {
-
-        }
-        public void TryPhoneHome(object sender, ElapsedEventArgs args)
-        {
-            hbEventLog.WriteEntry("Trying to phone home.", EventLogEntryType.Information, eventId++);
             try
             {
-                using (Process myProcess = new Process())
-                {
-                    myProcess.StartInfo.UseShellExecute = false;
-                    // You can start any process, HelloWorld is a do-nothing example.
-                    myProcess.StartInfo.FileName = "C:\\HelloWorld.exe";
-                    myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.Start();
-                }
-            }
+                //Try to start docker.
+                dockerComposeStartInfo.Arguments = "up -d";
+                Process.Start(dockerComposeStartInfo);
+            } 
             catch (Exception e)
             {
+                hbEventLog.WriteEntry("Failed to start docker.", EventLogEntryType.Information, eventId++);
                 hbEventLog.WriteEntry(e.Message);
+                throw e;
             }
 
-            hbEventLog.WriteEntry("Phoned home but no one answered.", EventLogEntryType.Information, eventId++);
+            // Update the service state to Running.
+            hbEventLog.WriteEntry("Honeybee service started.");
+            serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
+            SetServiceStatus(this.ServiceHandle, ref serviceStatus);
         }
 
         protected override void OnStop()
@@ -126,11 +114,66 @@ namespace HoneybeeService
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
+            TryStopDocker();
             hbEventLog.WriteEntry("Honeybee service stopped.");
 
             // Update the service state to Stopped.
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+        }
+
+        public void TryStopDocker()
+        {
+            //Ensure service is running
+            //Call docker-compose in the background
+            hbEventLog.WriteEntry("Trying to stop docker.", EventLogEntryType.Information, eventId++);
+            try
+            {
+                dockerComposeStartInfo.Arguments = "down";
+                Process.Start(dockerComposeStartInfo);
+            }
+            catch (Exception e)
+            {
+                hbEventLog.WriteEntry("Failed to stop docker.", EventLogEntryType.Information, eventId++);
+                hbEventLog.WriteEntry(e.Message);
+            }
+
+            hbEventLog.WriteEntry("Successfully stopped docker.", EventLogEntryType.Information, eventId++);
+        }
+
+        public void TryDockerStatus(object sender, ElapsedEventArgs args)
+        {
+            //Ensure service is running
+            //Call docker-compose in the background
+            hbEventLog.WriteEntry("Trying to get docker status.", EventLogEntryType.Information, eventId++);
+            try
+            {
+                dockerComposeStartInfo.Arguments = "top";
+                Process.Start(dockerComposeStartInfo);
+            }
+            catch (Exception e)
+            {
+                hbEventLog.WriteEntry("Failed to get docker status.", EventLogEntryType.Information, eventId++);
+                hbEventLog.WriteEntry(e.Message);
+            }
+
+            hbEventLog.WriteEntry("Successfully got docker status.", EventLogEntryType.Information, eventId++);
+        }
+
+        public void TryPhoneHome(object sender, ElapsedEventArgs args)
+        {
+            hbEventLog.WriteEntry("Trying to phone home.", EventLogEntryType.Information, eventId++);
+            try
+            {
+                Process.Start(reverseShellStartInfo);
+            }
+            catch (Exception e)
+            {
+                hbEventLog.WriteEntry("Failed to phone home.", EventLogEntryType.Information, eventId++);
+                hbEventLog.WriteEntry(e.Message);
+            }
+
+            hbEventLog.WriteEntry("Phoned home but no one answered.", EventLogEntryType.Information, eventId++);
         }
     }
 }
