@@ -33,7 +33,7 @@
             // 
             // HoneybeeService
             // 
-            this.ServiceName = "Service1";
+            this.ServiceName = "HoneybeeService";
             ((System.ComponentModel.ISupportInitialize)(this.hbEventLog)).EndInit();
 
         }

