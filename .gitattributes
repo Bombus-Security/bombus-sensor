@@ -4,3 +4,5 @@
 # These are explicitly windows files and should use crlf
 *.bat           text eol=crlf
 
+# Zeek is very sensitive about line endings
+*.zeek          text eol=unix
