@@ -107,4 +107,3 @@ redef LogAscii::use_json = T;
 @load policy/frameworks/intel/seen
 redef Intel::read_files += { "/opt/zeek/etc/intel/intel.txt" };
 redef ignore_checksums = T;
-redef ignore_checksums = T;

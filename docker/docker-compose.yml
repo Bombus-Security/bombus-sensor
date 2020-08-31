@@ -50,7 +50,7 @@ services:
       - es01
 
   nids:
-    image: zeek-local:latest
+    image: lwilson2048/honeybee-zeek:latest
     container_name: nids
     hostname: nids-manager
     network_mode: host

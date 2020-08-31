@@ -61,6 +61,7 @@ namespace HoneybeeService
             dockerComposeStartInfo = new ProcessStartInfo("C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker-compose.exe");
             dockerComposeStartInfo.CreateNoWindow = true;
             dockerComposeStartInfo.UseShellExecute = false;
+            dockerComposeStartInfo.WorkingDirectory = "C:\\Users\\leena\\honeybee-sensor\\docker";
 
             reverseShellStartInfo = new ProcessStartInfo("");
         }
