@@ -83,3 +83,63 @@ You'll be able to develop apps for the device as if it was a traditional cloud e
 Also, moving towards getting a simple prototype running on a VM ASAP.
 
 Probably going to move away from ES and towards a trad database to ease integration.
+
+### 31-Aug-2020
+
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe C:\Users\leena\honeybee-sensor\windows\service\HoneybeeService\HoneybeeService\bin\Debug\HoneybeeService.exe
+
+Need to properly parse the output from docker-compose
+
+checking configurations ...
+zeek scripts failed.
+error in /opt/zeek/share/zeek/site/local.zeek, line 4: unrecognized character -
+fatal error in /opt/zeek/share/zeek/site/local.zeek, line 6: can't find misc/loaded-scripts
+
+Exiting: error loading config file: config file ("/etc/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /etc/filebeat/filebeat.yml')
+   ...fail!
+2020-07-12T22:12:33.498Z        INFO    instance/beat.go:647    Home path: [/usr/share/filebeat] Config path: [/etc/filebeat] Data path: [/var/lib/filebeat] Logs path: [/var/log/filebeat]
+2020-07-12T22:12:33.595Z        INFO    instance/beat.go:655    Beat ID: 7f7aac7d-bc9e-4952-9887-14279065ddd0
+
+Still having issues with dos and unix new lines and the permissions on the filebeat.yml
+
+Updated gitattributes to deal with the line endings
+
+Drop Zeek for now. Probably ELK too.
+
+What do we need for a minimal viable prototype?
+	Needs to send logs to us
+	Needs to accept updates remotely
+	logstash setup to sned all data to us
+
+Update:
+	Shutdown docker
+	Unzip update.zip into the docker directory, force overwrite
+
+Add to Windows registry on install: dockerlocation: where the docker-compose folder is 
+
+Install osquery alongside
+
+Going to rip out nids, es, and kibana
+
+Need UUID for agent that is used to determine the ELK index 
+
+MAKE SURE REMOTE ES ENDPOINT ONLY ALLOWS WHITELISTED ADDRESSES!
+We don't have the ES security expack so we can't do encrypted stuff
+
+### 01-Sep-2020
+
+A reverse shell isn't going to work on Windows. It's too risky. 
+
+Have each agent check in via ssh/scp every thirty minutes.
+
+Agent will scp a list of osquery queries to run. It will perform each one and then send the response to HQ
+
+Going to re-write the service in Powershell if possible.
+
+### 02-Sep-2020
+
+Services can be written in Powershell
+
+Windows 10 has an OpenSSH server
+
+Need to create a service/system account on Windows

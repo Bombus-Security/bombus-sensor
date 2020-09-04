@@ -68,19 +68,3 @@ Reverse shell:
     Need a timer to call it
 
 docker-compose up -d
-
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe C:\Users\leena\honeybee-sensor\windows\service\HoneybeeService\HoneybeeService\bin\Debug\HoneybeeService.exe
-
-Need to properly parse the output from docker-compose
-
-checking configurations ...
-zeek scripts failed.
-error in /opt/zeek/share/zeek/site/local.zeek, line 4: unrecognized character -
-fatal error in /opt/zeek/share/zeek/site/local.zeek, line 6: can't find misc/loaded-scripts
-
-Exiting: error loading config file: config file ("/etc/filebeat/filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx" (to fix the permissions use: 'chmod go-w /etc/filebeat/filebeat.yml')
-   ...fail!
-2020-07-12T22:12:33.498Z        INFO    instance/beat.go:647    Home path: [/usr/share/filebeat] Config path: [/etc/filebeat] Data path: [/var/lib/filebeat] Logs path: [/var/log/filebeat]
-2020-07-12T22:12:33.595Z        INFO    instance/beat.go:655    Beat ID: 7f7aac7d-bc9e-4952-9887-14279065ddd0
-
-Still having issues with dos and unix new lines and the permissions on the filebeat.yml

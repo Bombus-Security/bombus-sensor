@@ -1,38 +1,5 @@
 version: '2.2'
 services:
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
-    container_name: es01
-    environment:
-      - node.name=es01
-      - cluster.name=es-docker-cluster
-      - cluster.initial_master_nodes=es01
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-    networks:
-      - green
-
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.8.1
-    container_name: kib01
-    ports:
-      - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
-    networks:
-      - green
-    depends_on:
-      - es01
-
   ls01:
     image: docker.elastic.co/logstash/logstash:7.8.1
     container_name: ls01
@@ -42,28 +9,11 @@ services:
     ports:
       - 5044:5044
     environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
+      ELASTICSEARCH_URL: http://${REMOTE_ES_HOST}:${REMOTE_ES_PORT}
+      ELASTICSEARCH_HOSTS: http://${REMOTE_ES_HOST}:${REMOTE_ES_PORT}
+      AGENT_UUID: ${AGENT_UUID}
     networks:
       - green
-    depends_on:
-      - es01
-
-  nids:
-    image: lwilson2048/honeybee-zeek:latest
-    container_name: nids
-    hostname: nids-manager
-    network_mode: host
-    environment:
-      LOGSTASH_URL: http://127.0.0.1:5044
-    volumes:
-      - ./temp/zeek-filebeat.yml:/etc/filebeat/filebeat.yml
-      - ./temp/local.zeek:/opt/zeek/share/zeek/site/local.zeek
-      - ./temp/node.cfg:/opt/zeek/etc/node.cfg
-    depends_on:
-      - ls01
-    cap_add:
-      - NET_ADMIN
 
 volumes:
   data01:
