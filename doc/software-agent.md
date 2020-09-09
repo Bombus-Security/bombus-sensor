@@ -68,3 +68,29 @@ Reverse shell:
     Need a timer to call it
 
 docker-compose up -d
+
+What are the requirements?
+    A way to manage 'apps' 
+    A host based API
+    A user managment system:
+        Sign-in with Google
+    A way to send and receive generic updates
+    A UUID for the device
+
+How do we contain the agent on the host?
+    No app should have direct access to the host
+    What interactions will we have with the host?
+        Managing the service
+        Limited osquery usage
+
+Can we containerize the host services?
+    Update transceiver:
+        Applying downloaded updates requires us to step out of container and effect the host
+    Local API Endpoint:
+        Alomst certainly
+    Storage System:
+        We'll need as direct of access to storage as possible.
+        Might not be able to containerize efficiently.
+
+Service that controls docker
+Way for transceiver container to tell host to update docker
