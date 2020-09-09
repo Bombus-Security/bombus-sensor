@@ -16,7 +16,6 @@ services:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     deploy:
       mode: global
-      restart_policy:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
@@ -37,7 +36,6 @@ services:
       - 9200:9200
     deploy:
       mode: global
-      restart_policy:
     
   kibana:
     image: docker.elastic.co/kibana/kibana:7.8.1
@@ -51,7 +49,6 @@ services:
       - elasticsearch
     deploy:
       mode: global
-      restart_policy:
     
   nids:
     image: lwilson2048/honeybee-zeek:latest
@@ -67,7 +64,6 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-      restart_policy:
 
 volumes:
   esvolume:

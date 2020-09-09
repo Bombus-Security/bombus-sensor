@@ -1,4 +1,4 @@
-### 8-Aug-2020
+### 08-Aug-2020
 
 Debating whether to use DBus or RabbitMQ. We need RPC which RabbitMQ doesn't really support. We also need a manageable way to define the protocols such as ProtoBuf. RabbitMQ can work with Protobufs. gRPC is too distributed, I want a single broker.
 
@@ -10,7 +10,7 @@ Further examination of gRPC shows it should work. Each sub-system has a port ass
 
 I don't think Gradle fits my needs. Its too based around Java. The primary language is Python and shell scripts. We also need to call a lot of external stuff like docker.
 
-### 9-Aug-2020
+### 09-Aug-2020
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-continuous-integration-with-buildbot-on-ubuntu-16-04
 https://www.digitalocean.com/community/tutorials/how-to-install-buildbot-on-ubuntu-16-04
@@ -143,3 +143,25 @@ Services can be written in Powershell
 Windows 10 has an OpenSSH server
 
 Need to create a service/system account on Windows
+
+### 09-Sep-2020
+
+Got the physical prototype. All work is now focused on getting it working.
+
+We're using Docker Swarm now. It has caused one difficult issue: we can no longer add NET_ADMIN so Zeek won't work in Docker now. I remember previously trying to mirror traffic to it from the host. That might be possible now. It will also probably be necessary. Other apps are going to want net traffic visibility, its a huge selling point of the device.
+
+Just thought of something. We should clusterize Zeek onto the local cluster. Zeek will only run on a Honeybee device.
+
+The most flexible method for packet capture is probably something like pf_ring on host that sends to containers. pf_ring can run in a docker container but it requires host networking or net_admin. We could run it seperately from the swarm.
+
+The Honeybee device will have both swarm and a local.
+
+Looks like pf_ring will need to be installed directly on host. This makes sense since its a kernel module. There are no pre-built packages for Alpine. 
+
+"PF_RING™ kernel module and drivers are distributed under the GNU GPLv2 license, LGPLv2.1 for the user-space PF_RING library, and are available in source code format."
+
+Building pf_ring on Alpine is a huge pain. 
+
+Should probably move back to Ubuntu server. We want the platform to be open and easy to expand. Alpine is not widely supported and includes its own package manager.
+
+Maybe Debian? Smaller, more stable, but with basically the same packages available.
