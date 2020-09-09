@@ -1,11 +1,65 @@
 version: '3.7'
 
 services:
-    logstash:
-        image: docker.elastic.co/logstash/logstash:7.8.1
-        container_name: logstash
-        volumes:
-          - ./temp/logstash.yml:/usr/share/logstash/config/logstash.yml
-          - ./temp/logstash-pipeline.conf:/usr/share/logstash/pipeline/logstash.conf
-        ports:
-          - 5044:5044
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.1
+    container_name: logstash
+    hostname: logstash
+    volumes:
+      - ./temp/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./temp/logstash-pipeline.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 5044:5044
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esvolume:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.1
+    container_name: kibana
+    hostname: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    
+  nids:
+    image: lwilson2048/honeybee-zeek:latest
+    container_name: nids
+    hostname: nids
+    network_mode: host
+    depends_on:
+      - logstash
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    cap_add:
+      - NET_ADMIN
+
+volumes:
+  esvolume:
+    driver: local
