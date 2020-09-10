@@ -165,3 +165,27 @@ Building pf_ring on Alpine is a huge pain.
 Should probably move back to Ubuntu server. We want the platform to be open and easy to expand. Alpine is not widely supported and includes its own package manager.
 
 Maybe Debian? Smaller, more stable, but with basically the same packages available.
+
+Moved to debian. pf_ring installs easily
+
+Unclear where we need to have pf_ring listen. If it listens on eno1 (to internet) it sees all traffic as its local IP. Probably need to listen on wlan0 and eno2
+
+Still need to figure out how to send traffic from pf_ring to docker containers. Looks like the zbounce example does this.
+
+As long as pf_ring is installed on the host it can be accessed from docker containers. These containers require --network=host though
+
+### 10-Sep-2020
+
+ntopng accounts for %15 of memory usage. 
+
+Setting up software agents and PKI
+
+1599704268.059068       Reporter::ERROR Zeek was not configured for GeoIP support (lookup_location(SSH::lookup_ip))     /opt/zeek/share/zeek/policy/protocols/ssh/geo-data.zeek, line 30
+
+1599703341.836045       Reporter::WARNING       Your interface is likely receiving invalid TCP checksums, most likely from NIC checksum offloading.  By default, packets with invalid checksums are discarded by Zeek unless using the -C command-line option or toggling the 'ignore_checksums' variable.  Alternatively, disable checksum offloading by the network adapter to ensure Zeek analyzes the actual checksums that are transmitted.        /opt/zeek/share/zeek/base/misc/find-checksum-offloading.zeek, line 54
+1599703375.370201       Reporter::INFO  received termination signal     (empty)
+1599703375.370201       Reporter::INFO  375 packets received on interface eno2, 0 (0.00%) dropped       (empty)
+
+postdrop: warning: unable to look up public/pickup: No such file or directory
+
+Got basic PKI set up.

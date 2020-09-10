@@ -1,0 +1,11 @@
+Source: honeybee
+Maintainer: Leena Wilson <leena@hnyb.app>
+Section: net
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>=9)
+
+Package: honeybee
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, docker-ce, docker-ce-cli, containerd.io
+Description: A distributed cloud network.
