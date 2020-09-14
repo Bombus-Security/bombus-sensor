@@ -387,3 +387,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# We don't want to distribute someone else's binaries
+docker-desktop.exe
