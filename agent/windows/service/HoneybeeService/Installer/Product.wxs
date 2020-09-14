@@ -39,10 +39,11 @@
       <!--   USER INTERFACE  -->
       <!-- ***************** -->
       
-      <UIRef Id="WixUI_Minimal" />
 
       <UI>
         <ProgressText Action="InstallLXSS">Installing Windows Subsystem for Linux</ProgressText>
+        <Property Id="LicenseAgreementDlg" Value="YORP" />
+        <UIRef Id="Custom_FeatureTree" />
       </UI>
 
       <!-- ***************** -->
