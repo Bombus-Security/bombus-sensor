@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Product Id="*" Name="Honeybee Hive Agent" Language="1033" Version="0.0.1.0" Manufacturer="Honeybee Hive" UpgradeCode="abdac55e-0c65-4e1e-bb1b-85ef9ce77925">
+      
+      <!-- ***************** -->
+      <!--       PACKAGE     -->
+      <!-- ***************** -->
       <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+      
       <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+      
+      <!-- ***************** -->
+      <!--        MEDIA      -->
+      <!-- ***************** -->
+      
       <MediaTemplate EmbedCab="yes" />
+
+      <!-- ***************** -->
+      <!--      FEATURES     -->
+      <!-- ***************** -->
+      
       <Feature Id="ProductFeature" Title="Installer" Level="1">
         <ComponentGroupRef Id="ProductComponents" />
       </Feature>
+
+      <Feature Id="HoneybeeFeature" Title="Honeybee" Level="1" Absent="disallow">
+
+      </Feature>
+
+      <Feature Id="LXSSFeature" Title="Windows Subsystem for Linux" Level="1" Absent="disallow">
+
+      </Feature>
+
+      <Feature Id="DockerFeature" Title="Docker Desktop for Windows" Level="1" Absent="disallow">
+
+      </Feature>
+      
+      <!-- ***************** -->
+      <!--   USER INTERFACE  -->
+      <!-- ***************** -->
+      
+      <UIRef Id="WixUI_Minimal" />
+
       <UI>
         <ProgressText Action="InstallLXSS">Installing Windows Subsystem for Linux</ProgressText>
       </UI>
@@ -20,8 +54,7 @@
 
       <Property Id="ARPURLINFOABOUT" Value="https://hnyb.app" />
       <Property Id="ARPHELPLINK" Value="https://hnyb.app" />
-      <Property Id="ALLUSERS" Value="1" />
-
+      
       <!-- ***************** -->
       <!-- DIRECTORY LAYOUT  -->
       <!-- ***************** -->
@@ -40,22 +73,23 @@
         <!-- <Component Id="ProductComponent"> -->
         <!-- TODO: Insert files, registry keys, and other resources here. -->
         <!-- </Component> -->
-        <Component Id="cmpAddUser" Guid="*" KeyPath="yes">
-          <util:User Id="HoneybeeServiceUser" Name="honeybee" LogonAsService="yes" UpdateIfExists="yes" />
-        </Component>
-        <Component Id="HoneybeeService" Guid="*">
-          <ServiceInstall Name="Honeybee Service" Type="ownProcess" Start="auto" ErrorControl="" />
-        </Component>
 
       </ComponentGroup>
-      
+<!--
+      <Component Id="cmpAddUser" Guid="2E4400E6-11C3-4042-86AD-E626037C2B93" KeyPath="yes">
+        <util:User Id="HoneybeeServiceUser" Name="honeybee" LogonAsService="yes" UpdateIfExists="yes" />
+      </Component>
+      <Component Id="HoneybeeService" Guid="B8B120EB-FEDB-4981-8211-5F5C24AFF21F">
+        <ServiceInstall Name="Honeybee Service" Type="ownProcess" Start="auto" ErrorControl="normal" />
+      </Component>
+      -->
       <!-- ***************** -->
       <!-- LAUNCH CONDITIONS -->
       <!-- ***************** -->
 
       <!-- Check Windows version-->
       <Condition Message= "OS must be Windows 10.">
-        <![CDATA[Installed OR VersionNT >= 1000]]>
+        <![CDATA[Installed OR VersionNT < 1000]]>
       </Condition>
       
       <!-- ***************** -->
@@ -68,9 +102,10 @@
       </Property>
       
       <!-- Check if Docker Desktop installed -->
+      <!--
       <Property Id="DOCKERINSTALLED">
         <RegistrySearch Id="KernelVersion" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss" Type="raw" Name="CurrentBuild" />
-      </Property>
+      </Property>-->
 
       <!-- ***************** -->
       <!--  CUSTOM ACTIONS   -->
