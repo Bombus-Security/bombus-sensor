@@ -20,6 +20,8 @@
       <Property Id="ARPURLINFOABOUT" Value="https://hnyb.app" />
       <Property Id="ARPHELPLINK" Value="https://hnyb.app" />
 
+      <Property Id="ROOTDRIVE" Value="C:\" />
+
       <!-- The license text -->
       <WixVariable Id="WixUILicenseRtf" Value="..\..\..\license.rtf" />
       
@@ -75,9 +77,6 @@
 
       <UI>
         <UIRef Id="WixUI_InstallDir" />
-        <ProgressText Action="InstallLXSS">Installing Windows Subsystem for Linux</ProgressText>
-        <!--<ProgressText Action="dockerInstallEXE_CA">Installing Docker Desktop</ProgressText>-->
-        
       </UI>
       
       <!-- ***************** -->
@@ -92,35 +91,14 @@
       <!-- ***************** -->
       <!--   DEPEND CHECKS   -->
       <!-- ***************** -->
-      
-      <!-- Check is Linux Subsystem installed -->
-      <Property Id="LXSSINSTALLED">
-        <RegistrySearch Id="KernelVersion" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss" Type="raw" Name="CurrentBuild" />
-      </Property>
-      
-      <!-- Check if Docker Desktop installed -->
-      <!--
-      <Property Id="DOCKERINSTALLED">
-        <RegistrySearch Id="KernelVersion" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss" Type="raw" Name="CurrentBuild" />
-      </Property>-->
+
 
       <!-- ***************** -->
       <!--  CUSTOM ACTIONS   -->
       <!-- ***************** -->
-      
-      <!-- Custom action to install feature -->
-      <!-- The first action sets the path to dism and the second action calls it-->
-      <CustomAction Id="InstallLXSS_Set" Property="InstallLXSS" Value="&quot;[System64Folder]dism.exe&quot; /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all" Execute="immediate" />
-      <CustomAction Id="InstallLXSS" BinaryKey="WixCA" DllEntry="CAQuietExec64" Execute="deferred" Return="check" />
-      
-      <Binary Id="dockerInstallEXE" SourceFile="..\..\..\docker-desktop.exe" />
-      <CustomAction Id="dockerInstallEXE_CA" BinaryKey="dockerInstallEXE" Impersonate="no" Execute="deferred" ExeCommand="" Return="check" />
-      
+
       <!-- Call the custom action -->
       <InstallExecuteSequence>
-        <!--<Custom Action="InstallLXSS_Set" After="CostFinalize" />
-        <Custom Action="InstallLXSS" After="InstallInitialize">NOT REMOVE AND NOT LXSSINSTALLED</Custom>
-        <Custom Action="dockerInstallEXE_CA" After="InstallLXSS">NOT REMOVE AND NOT DOCKERINSTALLED</Custom>-->
       </InstallExecuteSequence>
     </Product>
 </Wix>
