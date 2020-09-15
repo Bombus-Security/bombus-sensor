@@ -8,6 +8,21 @@
       <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
       
       <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+      <!-- ***************** -->
+      <!--   PACKAGE INFO    -->
+      <!-- ***************** -->
+
+      <!-- The app icon -->
+      <Icon Id="honeybeeIcon" SourceFile="..\..\..\honeybee.ico" />
+      <Property Id="ARPPRODUCTICON" Value="honeybeeIcon" />
+
+      <Property Id="ARPURLINFOABOUT" Value="https://hnyb.app" />
+      <Property Id="ARPHELPLINK" Value="https://hnyb.app" />
+
+      <!-- The license text -->
+      <WixVariable Id="WixUILicenseRtf" Value="..\..\..\license.rtf" />
+      
       
       <!-- ***************** -->
       <!--        MEDIA      -->
@@ -23,67 +38,48 @@
         <ComponentGroupRef Id="ProductComponents" />
       </Feature>
 
-      <Feature Id="HoneybeeFeature" Title="Honeybee" Level="1" Absent="disallow">
-
-      </Feature>
-
-      <Feature Id="LXSSFeature" Title="Windows Subsystem for Linux" Level="1" Absent="disallow">
-
-      </Feature>
-
-      <Feature Id="DockerFeature" Title="Docker Desktop for Windows" Level="1" Absent="disallow">
-
-      </Feature>
-      
-      <!-- ***************** -->
-      <!--   USER INTERFACE  -->
-      <!-- ***************** -->
-      
-
-      <UI>
-        <ProgressText Action="InstallLXSS">Installing Windows Subsystem for Linux</ProgressText>
-        <Property Id="LicenseAgreementDlg" Value="YORP" />
-        <UIRef Id="Custom_FeatureTree" />
-      </UI>
-
-      <!-- ***************** -->
-      <!--   PACKAGE INFO    -->
-      <!-- ***************** -->
-      
-      <Icon Id="honeybeeIcon" SourceFile="..\..\..\honeybee.ico" />
-      <Property Id="ARPPRODUCTICON" Value="honeybeeIcon" />
-
-      <Property Id="ARPURLINFOABOUT" Value="https://hnyb.app" />
-      <Property Id="ARPHELPLINK" Value="https://hnyb.app" />
-      
       <!-- ***************** -->
       <!-- DIRECTORY LAYOUT  -->
       <!-- ***************** -->
-      
+
       <Directory Id="TARGETDIR" Name="SourceDir">
         <Directory Id="ProgramFilesFolder">
           <Directory Id="INSTALLFOLDER" Name="Honeybee">
             <Directory Id="SERVICEFOLDER" Name="service">
+
             </Directory>
           </Directory>
         </Directory>
       </Directory>
 
       <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-        <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-        <!-- <Component Id="ProductComponent"> -->
-        <!-- TODO: Insert files, registry keys, and other resources here. -->
-        <!-- </Component> -->
+        <Component Id="cmpAddUser" Guid="2E4400E6-11C3-4042-86AD-E626037C2B93" KeyPath="yes">
+          <util:User Id="HoneybeeServiceUser" Name="honeybee" LogonAsService="yes" UpdateIfExists="yes" RemoveOnUninstall="yes" />
+        </Component>
+        
+        <Component Id="installHoneybeeService" Guid="B8B120EB-FEDB-4981-8211-5F5C24AFF21F">
+          <File Id="HoneybeeService.exe" Source="..\HoneybeeService\bin\Debug\" Vital="yes" />
+          <ServiceInstall Id="serviceInstall" Name="HoneybeeService" Type="ownProcess" Start="auto" ErrorControl="normal" DisplayName="Honeybee Service" Interactive="no" Arguments=" /start HoneybeeService"  />
+          <ServiceControl Id="serviceControl" Start="install" Stop="both" Remove="both" Name="HoneybeeService" />
+        </Component>
 
       </ComponentGroup>
-<!--
-      <Component Id="cmpAddUser" Guid="2E4400E6-11C3-4042-86AD-E626037C2B93" KeyPath="yes">
-        <util:User Id="HoneybeeServiceUser" Name="honeybee" LogonAsService="yes" UpdateIfExists="yes" />
-      </Component>
-      <Component Id="HoneybeeService" Guid="B8B120EB-FEDB-4981-8211-5F5C24AFF21F">
-        <ServiceInstall Name="Honeybee Service" Type="ownProcess" Start="auto" ErrorControl="normal" />
-      </Component>
-      -->
+      
+      
+      <!-- ***************** -->
+      <!--   USER INTERFACE  -->
+      <!-- ***************** -->
+
+      <!-- Needed for the Install Directory UI dialog -->
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+      <UI>
+        <UIRef Id="WixUI_InstallDir" />
+        <ProgressText Action="InstallLXSS">Installing Windows Subsystem for Linux</ProgressText>
+        <!--<ProgressText Action="dockerInstallEXE_CA">Installing Docker Desktop</ProgressText>-->
+        
+      </UI>
+      
       <!-- ***************** -->
       <!-- LAUNCH CONDITIONS -->
       <!-- ***************** -->
@@ -122,9 +118,9 @@
       
       <!-- Call the custom action -->
       <InstallExecuteSequence>
-        <Custom Action="InstallLXSS_Set" After="CostFinalize" />
+        <!--<Custom Action="InstallLXSS_Set" After="CostFinalize" />
         <Custom Action="InstallLXSS" After="InstallInitialize">NOT REMOVE AND NOT LXSSINSTALLED</Custom>
-        <Custom Action="dockerInstallEXE_CA" After="InstallLXSS">NOT REMOVE AND NOT DOCKERINSTALLED</Custom>
+        <Custom Action="dockerInstallEXE_CA" After="InstallLXSS">NOT REMOVE AND NOT DOCKERINSTALLED</Custom>-->
       </InstallExecuteSequence>
     </Product>
 </Wix>
