@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Timers;
 
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+
 public enum ServiceState
 {
     SERVICE_STOPPED = 0x00000001,
