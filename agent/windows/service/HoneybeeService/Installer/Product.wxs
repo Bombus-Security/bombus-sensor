@@ -38,6 +38,7 @@
       
       <Feature Id="ProductFeature" Title="Installer" Level="1">
         <ComponentGroupRef Id="ProductComponents" />
+        <ComponentRef Id="RegistryEntries" />
       </Feature>
 
       <!-- ***************** -->
@@ -48,13 +49,28 @@
         <Directory Id="ProgramFilesFolder">
           <Directory Id="INSTALLFOLDER" Name="Honeybee">
             <Directory Id="SERVICEFOLDER" Name="service">
+            </Directory>
 
+            <Directory Id="CONTENTFOLDER" Name="content">
             </Directory>
           </Directory>
         </Directory>
+
+      <!-- ***************** -->
+      <!--   REGISTRY KEYS   -->
+      <!-- ***************** -->        
+        <Component Id="RegistryEntries" Guid="48100F15-3219-4E52-803D-4278A113D1DC">
+          <RegistryKey Root="HKLM"
+                       Key="Software\Honeybee\Agent"
+                       Action="createAndRemoveOnUninstall">
+            <RegistryValue Type="string" Name="AppPath" Value="[INSTALLFOLDER]" KeyPath="yes" />
+            <RegistryValue Type="string" Name="ContentPath" Value="[CONTENTFOLDER]" />
+            <RegistryValue Type="string" Name="ServicePath" Value="[SERVICEFOLDER]" />
+          </RegistryKey>
+        </Component>
       </Directory>
 
-      <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <ComponentGroup Id="ProductComponents" Directory="SERVICEFOLDER">
         <Component Id="cmpAddUser" Guid="2E4400E6-11C3-4042-86AD-E626037C2B93" KeyPath="yes">
           <util:User Id="HoneybeeServiceUser" Name="honeybee" LogonAsService="yes" UpdateIfExists="yes" RemoveOnUninstall="yes" />
         </Component>

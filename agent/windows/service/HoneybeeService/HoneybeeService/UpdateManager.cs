@@ -15,32 +15,35 @@ namespace HoneybeeService
     class UpdateManager
     {
         //The http client is used for calling API endpoints
-        HttpClient http_client;
+        HttpClient httpClient;
 
         //The web client is used for downloading files
-        WebClient web_client;
+        WebClient webClient;
 
-        String base_path;
-        String content_path;
+        //The path to the base install directory
+        String basePath;
+
+        //The path to the content directory
+        String contentPath;
 
         System.Diagnostics.EventLog hbEventLog;
 
         public UpdateManager()
         {
             //Retrieve paths to our content and base directories
-            base_path = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Honeybee\\Agent", "AppPath", "");
-            content_path = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Honeybee\\Agent", "ContentPath", base_path + "\\content");
+            basePath = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Honeybee\\Agent", "AppPath", "");
+            contentPath = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Honeybee\\Agent", "ContentPath", basePath + "\\content");
 
             //The http client is used for calling API endpoints
-            http_client = new HttpClient();
+            httpClient = new HttpClient();
 
-            http_client.BaseAddress = new Uri("https://hnyb.app/api/");
-            http_client.DefaultRequestHeaders.Accept.Clear();
-            http_client.DefaultRequestHeaders.Accept.Add(
+            httpClient.BaseAddress = new Uri("https://hnyb.app/api/");
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             //The web client is used for downloading files
-            web_client = new WebClient();
+            webClient = new WebClient();
 
             //Open or create the eventlog
             hbEventLog = new System.Diagnostics.EventLog();
@@ -83,7 +86,7 @@ namespace HoneybeeService
          */
         public int GetLocalContentTimestamp()
         {
-            return Int32.Parse(File.ReadAllLines(content_path + "\\lastupdate")[0]);
+            return Int32.Parse(File.ReadAllLines(contentPath + "\\lastupdate")[0]);
         }
 
         /*
@@ -94,7 +97,7 @@ namespace HoneybeeService
             hbEventLog.WriteEntry("UpdateManager: Checking for latest content timestamp.");
   
             int unix_timestamp = 0;
-            HttpResponseMessage response = await http_client.GetAsync("content/currentContentInfo");
+            HttpResponseMessage response = await httpClient.GetAsync("content/currentContentInfo");
 
             if (response.IsSuccessStatusCode)
             {
@@ -115,7 +118,7 @@ namespace HoneybeeService
         public async Task<String> GetContentEndpoint()
         {
             String endpoint = "";
-            HttpResponseMessage response = await http_client.GetAsync("content/getContentEndpoint"); 
+            HttpResponseMessage response = await httpClient.GetAsync("content/getContentEndpoint"); 
             
             if (response.IsSuccessStatusCode)
             {
@@ -139,11 +142,11 @@ namespace HoneybeeService
             String update_file_path = Path.GetTempFileName();
             String sig_file_path = update_file_path + ".sig";
 
-            await web_client.DownloadFileTaskAsync(endpoint + "latest-windows.zip", update_file_path);
+            await webClient.DownloadFileTaskAsync(endpoint + "latest-windows.zip", update_file_path);
             hbEventLog.WriteEntry("UpdateManager: Downloaded newest content: " + update_file_path);
 
             //Also get the signature file
-            await web_client.DownloadFileTaskAsync(endpoint + "latest-windows.zip.sig", sig_file_path);
+            await webClient.DownloadFileTaskAsync(endpoint + "latest-windows.zip.sig", sig_file_path);
             hbEventLog.WriteEntry("UpdateManager: Downloaded newest content signature: " + sig_file_path);
 
             //If no signature file throw an error

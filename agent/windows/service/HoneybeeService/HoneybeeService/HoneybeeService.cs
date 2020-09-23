@@ -45,6 +45,10 @@ namespace HoneybeeService
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
 
+        UpdateManager updateManager;
+
+        ServiceStatus serviceStatus;
+
         public HoneybeeService()
         {
             InitializeComponent();
@@ -57,17 +61,20 @@ namespace HoneybeeService
             hbEventLog.Source = "HoneybeeService";
             hbEventLog.Log = "HoneybeeServiceLog";
 
+            updateManager = new UpdateManager();
+
+            serviceStatus = new ServiceStatus();
+            serviceStatus.dwWaitHint = 100000;
         }
 
         protected override void OnStart(string[] args)
         {
-            hbEventLog.WriteEntry("Honeybee service starting.");
-
             // Update the service state to Start Pending.
-            ServiceStatus serviceStatus = new ServiceStatus();
+            hbEventLog.WriteEntry("Honeybee service starting.");
             serviceStatus.dwCurrentState = ServiceState.SERVICE_START_PENDING;
-            serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
+
+            /* Do any start up activities between these two blocks */
 
             // Update the service state to Running.
             hbEventLog.WriteEntry("Honeybee service started.");
@@ -78,9 +85,7 @@ namespace HoneybeeService
         protected override void OnStop()
         {
             // Update the service state to Stop Pending.
-            ServiceStatus serviceStatus = new ServiceStatus();
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOP_PENDING;
-            serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             hbEventLog.WriteEntry("Honeybee service stopped.");
