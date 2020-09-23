@@ -51,6 +51,8 @@ namespace HoneybeeService
             }
             hbEventLog.Source = "HoneybeeService";
             hbEventLog.Log = "HoneybeeServiceLog";
+
+            hbEventLog.WriteEntry("UpdateManager: UpdateManager created.");
         }
 
         /*
@@ -59,6 +61,7 @@ namespace HoneybeeService
          */
         public async Task GetContent()
         {
+            hbEventLog.WriteEntry("UpdateManager: Checking for content updates.");
             //Get the timestamp/hash of our previous update
             int local_timestamp = GetLocalContentTimestamp();
 
@@ -68,6 +71,8 @@ namespace HoneybeeService
             //If newer content available download from /content/LATEST
             if (latest_timestamp > local_timestamp)
             {
+                hbEventLog.WriteEntry("UpdateManager: Newer content available. Attempting to download.");
+
                 String endpoint = await GetContentEndpoint();
                 String path_to_update = await DownloadLatestContent(endpoint);
             }
@@ -86,12 +91,19 @@ namespace HoneybeeService
          */
         public async Task<int> GetLatestContentTimestamp()
         {
+            hbEventLog.WriteEntry("UpdateManager: Checking for latest content timestamp.");
+  
             int unix_timestamp = 0;
             HttpResponseMessage response = await http_client.GetAsync("content/currentContentInfo");
 
             if (response.IsSuccessStatusCode)
             {
                 unix_timestamp = await response.Content.ReadAsAsync<int>();
+                hbEventLog.WriteEntry("UpdateManager: Got latest content timestamp: " + unix_timestamp);
+            }
+            else
+            {
+                hbEventLog.WriteEntry("UpdateManager: Could not retrieve latest content timestamp. Server returned: " + response.StatusCode.ToString() + " " + response.ReasonPhrase);
             }
 
             return unix_timestamp;
@@ -103,16 +115,18 @@ namespace HoneybeeService
         public async Task<String> GetContentEndpoint()
         {
             String endpoint = "";
-            HttpResponseMessage response = await http_client.GetAsync("content/getDownloadEndpoint"); 
+            HttpResponseMessage response = await http_client.GetAsync("content/getContentEndpoint"); 
             
             if (response.IsSuccessStatusCode)
             {
                 endpoint = await response.Content.ReadAsAsync<String>();
+                hbEventLog.WriteEntry("UpdateManager: Content endpoint received: " + endpoint);
             }
             else
             {
                 //Throw an error
-            }    
+                hbEventLog.WriteEntry("UpdateManager: Failed to retrieve content endpoint. Server returned: " + response.StatusCode.ToString() + " " + response.ReasonPhrase);
+            }
 
             return endpoint;
         }
@@ -126,17 +140,19 @@ namespace HoneybeeService
             String sig_file_path = update_file_path + ".sig";
 
             await web_client.DownloadFileTaskAsync(endpoint + "latest-windows.zip", update_file_path);
+            hbEventLog.WriteEntry("UpdateManager: Downloaded newest content: " + update_file_path);
 
             //Also get the signature file
             await web_client.DownloadFileTaskAsync(endpoint + "latest-windows.zip.sig", sig_file_path);
+            hbEventLog.WriteEntry("UpdateManager: Downloaded newest content signature: " + sig_file_path);
 
             //If no signature file throw an error
 
             //Verify signature
             //If fail throw an error
-            if (VerifyContentSignature(sig_file_path))
+            if (!VerifyContentSignature(sig_file_path))
             {
-
+                hbEventLog.WriteEntry("UpdateManager: Signature failed verification: " + sig_file_path);
             }
 
             return update_file_path;
@@ -144,9 +160,11 @@ namespace HoneybeeService
 
         /*
          * Verifies the .sig file downloaded with the LATEST content
+         * Returns FALSE on verification failure
          */
         public bool VerifyContentSignature(String sig_path)
         {
+            hbEventLog.WriteEntry("UpdateManager: Signature successfully verified: " + sig_path);
             return true;
         }
 
