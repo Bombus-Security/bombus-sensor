@@ -35,12 +35,12 @@ namespace HoneybeeService
             contentPath = (String)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Honeybee\\Agent", "ContentPath", basePath + "\\content");
 
             //The http client is used for calling API endpoints
-            httpClient = new HttpClient();
-
-            httpClient.BaseAddress = new Uri("https://hnyb.app/api/");
+            httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://hnyb.app/api/")
+            };
             httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             //The web client is used for downloading files
             webClient = new WebClient();
@@ -64,52 +64,55 @@ namespace HoneybeeService
          */
         public async Task GetContent()
         {
-            hbEventLog.WriteEntry("UpdateManager: Checking for content updates.");
-            //Get the timestamp/hash of our previous update
-            int local_timestamp = GetLocalContentTimestamp();
-
-            //Check /api/content/currentContentInfo
-            int latest_timestamp = await GetLatestContentTimestamp();
-
-            //If newer content available download from /content/LATEST
-            if (latest_timestamp > local_timestamp)
+            try
             {
-                hbEventLog.WriteEntry("UpdateManager: Newer content available. Attempting to download.");
+                hbEventLog.WriteEntry("UpdateManager: Checking for content updates.");
+                //Get the timestamp/hash of our previous update
+                int local_version = GetLocalContentVersion();
 
-                String endpoint = await GetContentEndpoint();
-                String path_to_update = await DownloadLatestContent(endpoint);
+                //Check /api/content/currentContentInfo
+                int latest_version = await GetLatestContentVersion();
+
+                //If newer content available download from /content/LATEST
+                if (latest_version > local_version)
+                {
+                    hbEventLog.WriteEntry("UpdateManager: Newer content available. Attempting to download.");
+
+                    String endpoint = await GetContentEndpoint();
+                    String path_to_update = await DownloadLatestContent(endpoint);
+                }
             }
         }
 
         /*
-         * Retrieves the update time from <content>/lastupdate stored as a unix timestamp
+         * Retrieves the update time from <content>/contentversion stored as an int32
          */
-        public int GetLocalContentTimestamp()
+        public int GetLocalContentVersion()
         {
-            return Int32.Parse(File.ReadAllLines(contentPath + "\\lastupdate")[0]);
+            return Int32.Parse(File.ReadAllLines(contentPath + "\\contentversion")[0]);
         }
 
         /*
-         * Gets the current latest update timestamp from Honeybee servers
+         * Gets the current latest update version from Honeybee servers
          */
-        public async Task<int> GetLatestContentTimestamp()
+        public async Task<int> GetLatestContentVersion()
         {
-            hbEventLog.WriteEntry("UpdateManager: Checking for latest content timestamp.");
+            hbEventLog.WriteEntry("UpdateManager: Checking for latest content version.");
   
-            int unix_timestamp = 0;
-            HttpResponseMessage response = await httpClient.GetAsync("content/currentContentInfo");
+            int version = 0;
+            HttpResponseMessage response = await httpClient.GetAsync("content/currentContentVersion");
 
             if (response.IsSuccessStatusCode)
             {
-                unix_timestamp = await response.Content.ReadAsAsync<int>();
-                hbEventLog.WriteEntry("UpdateManager: Got latest content timestamp: " + unix_timestamp);
+                version = await response.Content.ReadAsAsync<int>();
+                hbEventLog.WriteEntry("UpdateManager: Got latest content version: " + version);
             }
             else
             {
-                hbEventLog.WriteEntry("UpdateManager: Could not retrieve latest content timestamp. Server returned: " + response.StatusCode.ToString() + " " + response.ReasonPhrase);
+                hbEventLog.WriteEntry("UpdateManager: Could not retrieve latest content version. Server returned: " + response.StatusCode.ToString() + " " + response.ReasonPhrase);
             }
 
-            return unix_timestamp;
+            return version;
         }
 
         /*

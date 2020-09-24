@@ -63,8 +63,10 @@ namespace HoneybeeService
 
             updateManager = new UpdateManager();
 
-            serviceStatus = new ServiceStatus();
-            serviceStatus.dwWaitHint = 100000;
+            serviceStatus = new ServiceStatus
+            {
+                dwWaitHint = 100000
+            };
         }
 
         protected override void OnStart(string[] args)

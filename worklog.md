@@ -189,3 +189,7 @@ Setting up software agents and PKI
 postdrop: warning: unable to look up public/pickup: No such file or directory
 
 Got basic PKI set up.
+
+### 23-Sep-2020
+
+What does the 'content' look like
